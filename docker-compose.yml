@@ -1,0 +1,56 @@
+services:
+  # Service PHP avec Apache
+  php:
+    build: .
+    container_name: myweeklyallowance_php
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_DATABASE=myweeklyallowance
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  # Service MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: myweeklyallowance_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: myweeklyallowance
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  # Service phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: myweeklyallowance_pma
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
