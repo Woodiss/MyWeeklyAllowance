@@ -1,30 +1,18 @@
 FROM php:8.2-apache
 
-# Installation des extensions PHP nécessaires
+# Installation des extensions nécessaires (PDO MySQL, Zip pour composer)
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
-    git \
-    && docker-php-ext-install pdo pdo_mysql mysqli zip
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Installation de PHPUnit (pour TDD)
-RUN curl -L https://phar.phpunit.de/phpunit-10.phar -o /usr/local/bin/phpunit \
-    && chmod +x /usr/local/bin/phpunit
+# Utiliser public/ comme DocumentRoot
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+RUN sed -ri -e 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Activation du module Apache rewrite
+# Activer mod_rewrite (souvent nécessaire)
 RUN a2enmod rewrite
-
-# Configuration du répertoire de travail
-WORKDIR /var/www/html
-
-# Copie des fichiers du projet
-COPY . /var/www/html
-
-# Permissions
-RUN chown -R www-data:www-data /var/www/html
-
-EXPOSE 80

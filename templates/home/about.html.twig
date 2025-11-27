@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+{% block styles %}
+	<style>
+		.about {
+			background: white;
+			border-radius: 20px;
+			padding: 3rem;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+			margin-top: 3rem;
+		}
+
+		.about h1 {
+			color: #667eea;
+			margin-bottom: 2rem;
+		}
+
+		.about h2 {
+			color: #764ba2;
+			margin-top: 2rem;
+			margin-bottom: 1rem;
+		}
+
+		.about p {
+			line-height: 1.8;
+			color: #666;
+			margin-bottom: 1rem;
+		}
+
+		.about ul {
+			margin-left: 2rem;
+			color: #666;
+		}
+
+		.about li {
+			margin-bottom: 0.5rem;
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="about">
+		<h1>À propos de MyWeeklyAllowance</h1>
+
+		<p>
+			MyWeeklyAllowance est une application de gestion d'argent de poche 
+			            conçue pour aider les parents à gérer les finances de leurs adolescents 
+			            de manière simple et efficace.
+		</p>
+
+		<h2>Fonctionnalités principales</h2>
+		<ul>
+			<li>Créer des comptes pour vos adolescents</li>
+			<li>Déposer de l'argent facilement</li>
+			<li>Enregistrer les dépenses avec descriptions</li>
+			<li>Configurer une allocation hebdomadaire automatique</li>
+			<li>Consulter l'historique complet des transactions</li>
+		</ul>
+
+		<h2>Développé avec TDD</h2>
+		<p>
+			Ce projet a été développé en suivant la méthodologie TDD 
+			            (Test Driven Development) pour garantir la qualité et la fiabilité du code.
+		</p>
+	</div>
+{% endblock %}

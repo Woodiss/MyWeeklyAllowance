@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+{% block styles %}
+	<style>
+		.hero {
+			background: white;
+			border-radius: 20px;
+			padding: 3rem;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+			text-align: center;
+			margin-top: 3rem;
+		}
+
+		.hero h1 {
+			font-size: 3rem;
+			color: #667eea;
+			margin-bottom: 1rem;
+		}
+
+		.hero p {
+			font-size: 1.2rem;
+			color: #666;
+			margin-bottom: 2rem;
+		}
+
+		.features {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 2rem;
+			margin-top: 3rem;
+		}
+
+		.feature {
+			background: white;
+			padding: 2rem;
+			border-radius: 15px;
+			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+			transition: transform 0.3s;
+		}
+
+		.feature:hover {
+			transform: translateY(-5px);
+		}
+
+		.feature h3 {
+			color: #764ba2;
+			margin-bottom: 1rem;
+		}
+
+		.btn {
+			display: inline-block;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 1rem 2rem;
+			border-radius: 50px;
+			text-decoration: none;
+			font-weight: 600;
+			transition: transform 0.3s;
+		}
+
+		.btn:hover {
+			transform: scale(1.05);
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="hero">
+		<h1>💰
+			{{ title }}</h1>
+		<p>{{ description }}</p>
+		<a href="#" class="btn">Commencer maintenant</a>
+	</div>
+
+	<div class="features">
+		<div class="feature">
+			<h3>📊 Suivi du solde</h3>
+			<p>Consultez le solde en temps réel de vos adolescents</p>
+		</div>
+
+		<div class="feature">
+			<h3>💳 Dépôts faciles</h3>
+			<p>Ajoutez de l'argent en quelques clics</p>
+		</div>
+
+		<div class="feature">
+			<h3>📅 Allocation automatique</h3>
+			<p>Configurez une allocation hebdomadaire récurrente</p>
+		</div>
+
+		<div class="feature">
+			<h3>📝 Historique complet</h3>
+			<p>Suivez toutes les transactions et dépenses</p>
+		</div>
+	</div>
+{% endblock %}

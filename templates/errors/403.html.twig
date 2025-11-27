@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}403 - Accès interdit
+{% endblock %}
+
+{% block content %}
+	<div style="background: white; border-radius: 20px; padding: 3rem; text-align: center; margin-top: 3rem;">
+		<h1 style="font-size: 5rem; color: #667eea;">🚫</h1>
+		<h2 style="color: #764ba2; margin-bottom: 1rem;">Accès interdit</h2>
+		<p style="color: #666; margin-bottom: 2rem;">Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
+		<a href="/" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 600;">
+			Retour à l'accueil
+		</a>
+	</div>
+{% endblock %}

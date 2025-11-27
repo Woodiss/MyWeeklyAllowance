@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+{% block styles %}
+	<style>
+		.form-container {
+			max-width: 500px;
+			margin: 3rem auto;
+			padding: 0 1rem;
+		}
+
+		.form-card {
+			background: white;
+			border-radius: 20px;
+			padding: 2.5rem;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+		}
+
+		.form-card h1 {
+			color: #667eea;
+			text-align: center;
+			margin-bottom: 2rem;
+			font-size: 1.75rem;
+		}
+
+		.form-group {
+			margin-bottom: 1.5rem;
+		}
+
+		.form-group label {
+			display: block;
+			color: #333;
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 0.875rem 1rem;
+			border: 2px solid #e0e0e0;
+			border-radius: 10px;
+			font-size: 1rem;
+			transition: all 0.3s;
+		}
+
+		.form-group input:focus {
+			outline: none;
+			border-color: #667eea;
+			box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+		}
+
+		.form-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 1rem;
+		}
+
+		.btn-submit {
+			width: 100%;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 1rem;
+			border: none;
+			border-radius: 10px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 0.3s;
+		}
+
+		.btn-submit:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+		}
+
+		.back-link {
+			text-align: center;
+			margin-top: 1.5rem;
+		}
+
+		.back-link a {
+			color: #667eea;
+			text-decoration: none;
+			font-weight: 600;
+		}
+
+		.back-link a:hover {
+			color: #764ba2;
+		}
+
+		.alert {
+			margin-bottom: 1.5rem;
+			padding: 1rem;
+			border-radius: 10px;
+			font-weight: 600;
+		}
+
+		.alert-danger {
+			background-color: #f8d7da;
+			color: #721c24;
+		}
+
+		.form-hint {
+			font-size: 0.875rem;
+			color: #666;
+			margin-top: 0.25rem;
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="form-container">
+		<div class="form-card">
+			<h1>🧒
+				{{ title }}</h1>
+
+			{% if error %}
+				<div class="alert alert-danger">
+					{{ error }}
+				</div>
+			{% endif %}
+
+			<form method="POST" action="/parent/teen/create">
+				<div class="form-row">
+					<div class="form-group">
+						<label for="firstName">Prénom</label>
+						<input type="text" id="firstName" name="firstName" value="{{ firstName ?? '' }}" placeholder="Jean" required>
+					</div>
+
+					<div class="form-group">
+						<label for="lastName">Nom</label>
+						<input type="text" id="lastName" name="lastName" value="{{ lastName ?? '' }}" placeholder="Dupont" required>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="age">Âge</label>
+					<input type="number" id="age" name="age" value="{{ age ?? '' }}" min="10" max="18" placeholder="14" required>
+					<div class="form-hint">Entre 10 et 18 ans</div>
+				</div>
+
+				<div class="form-group">
+					<label for="password">Mot de passe</label>
+					<input type="password" id="password" name="password" placeholder="••••••••" required>
+					<div class="form-hint">Minimum 6 caractères</div>
+				</div>
+
+				<div class="form-group">
+					<label for="password_confirm">Confirmer le mot de passe</label>
+					<input type="password" id="password_confirm" name="password_confirm" placeholder="••••••••" required>
+				</div>
+
+				<button type="submit" class="btn-submit">
+					✅ Créer le compte
+				</button>
+			</form>
+
+			<div class="back-link">
+				<a href="/parent/dashboard">← Retour au tableau de bord</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -12,7 +12,9 @@
   },
   "autoload": {
     "psr-4": {
-      "": "src/"
+      "App\\": "src/",
+      "Controller\\": "src/Controller/",
+      "Config\\": "config/"
     }
   },
   "autoload-dev": {

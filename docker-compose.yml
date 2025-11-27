@@ -10,8 +10,8 @@ services:
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_DATABASE=myweeklyallowance
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
     depends_on:
       - mysql
     networks:

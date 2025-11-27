@@ -1,0 +1,308 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+{% block styles %}
+	<style>
+		.wallet-container {
+			max-width: 900px;
+			margin: 2rem auto;
+			padding: 0 1rem;
+		}
+
+		.back-button {
+			display: inline-block;
+			color: #667eea;
+			text-decoration: none;
+			font-weight: 600;
+			margin-bottom: 1rem;
+			transition: color 0.3s;
+		}
+
+		.back-button:hover {
+			color: #764ba2;
+		}
+
+		.teen-header {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			border-radius: 20px;
+			padding: 2rem;
+			margin-bottom: 2rem;
+			display: flex;
+			align-items: center;
+			gap: 1.5rem;
+		}
+
+		.teen-avatar-large {
+			width: 80px;
+			height: 80px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.2);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 2.5rem;
+		}
+
+		.teen-details h1 {
+			margin: 0 0 0.5rem;
+			font-size: 2rem;
+		}
+
+		.teen-details p {
+			margin: 0;
+			opacity: 0.9;
+		}
+
+		.wallet-card {
+			background: white;
+			border-radius: 20px;
+			padding: 2rem;
+			margin-bottom: 2rem;
+			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+		}
+
+		.balance-display {
+			text-align: center;
+			padding: 2rem;
+			background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
+			border-radius: 15px;
+			margin-bottom: 2rem;
+		}
+
+		.balance-label {
+			font-size: 1rem;
+			color: #666;
+			margin-bottom: 0.5rem;
+		}
+
+		.balance-amount {
+			font-size: 3rem;
+			font-weight: 700;
+			color: #667eea;
+			margin: 0;
+		}
+
+		.add-money-form {
+			background: #f8f9ff;
+			border-radius: 15px;
+			padding: 1.5rem;
+			margin-bottom: 2rem;
+		}
+
+		.add-money-form h3 {
+			color: #333;
+			margin: 0 0 1rem;
+		}
+
+		.form-row {
+			display: grid;
+			grid-template-columns: 1fr 2fr auto;
+			gap: 1rem;
+			align-items: end;
+		}
+
+		.form-group {
+			margin: 0;
+		}
+
+		.form-group label {
+			display: block;
+			color: #333;
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+			font-size: 0.875rem;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 0.75rem;
+			border: 2px solid #e0e0e0;
+			border-radius: 8px;
+			font-size: 1rem;
+		}
+
+		.form-group input:focus {
+			outline: none;
+			border-color: #667eea;
+		}
+
+		.btn-add {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 0.75rem 1.5rem;
+			border: none;
+			border-radius: 8px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 0.3s;
+		}
+
+		.btn-add:hover {
+			transform: translateY(-2px);
+		}
+
+		.transactions-section h2 {
+			color: #333;
+			margin-bottom: 1.5rem;
+		}
+
+		.transaction-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+
+		.transaction-item {
+			background: #f8f9ff;
+			border-radius: 10px;
+			padding: 1rem;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.transaction-info {
+			flex: 1;
+		}
+
+		.transaction-description {
+			font-weight: 600;
+			color: #333;
+			margin-bottom: 0.25rem;
+		}
+
+		.transaction-date {
+			font-size: 0.875rem;
+			color: #666;
+		}
+
+		.transaction-amount {
+			font-size: 1.25rem;
+			font-weight: 700;
+		}
+
+		.transaction-amount.credit {
+			color: #10b981;
+		}
+
+		.transaction-amount.debit {
+			color: #ef4444;
+		}
+
+		.empty-transactions {
+			text-align: center;
+			padding: 3rem;
+			color: #666;
+		}
+
+		.empty-transactions-icon {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		.alert {
+			padding: 1rem;
+			border-radius: 10px;
+			margin-bottom: 1rem;
+			font-weight: 600;
+		}
+
+		.alert-success {
+			background-color: #d4edda;
+			color: #155724;
+		}
+
+		.alert-danger {
+			background-color: #f8d7da;
+			color: #721c24;
+		}
+	</style>
+{% endblock %}
+
+{% block content %}
+	<div class="wallet-container">
+		<a href="/parent/dashboard" class="back-button">← Retour au tableau de bord</a>
+
+		<div class="teen-header">
+			<div class="teen-avatar-large">🧒</div>
+			<div class="teen-details">
+				<h1>{{ teen.firstname }}
+					{{ teen.lastname }}</h1>
+				<p>{{ teen.age }}
+					ans</p>
+			</div>
+		</div>
+
+		{% if session.success_message %}
+			<div class="alert alert-success">
+				{{ session.success_message }}
+			</div>
+		{% endif %}
+
+		{% if session.error_message %}
+			<div class="alert alert-danger">
+				{{ session.error_message }}
+			</div>
+		{% endif %}
+
+		<div class="wallet-card">
+			<div class="balance-display">
+				<div class="balance-label">Solde actuel</div>
+				<div class="balance-amount">{{ wallet.balance|number_format(2, ',', ' ') }}
+					€</div>
+			</div>
+
+			<div class="add-money-form">
+				<h3>💰 Ajouter de l'argent</h3>
+				<form method="POST" action="/parent/teen/{{ teen.id }}/add-money">
+					<div class="form-row">
+						<div class="form-group">
+							<label for="amount">Montant (€)</label>
+							<input type="number" id="amount" name="amount" step="0.01" min="0.01" placeholder="10.00" required>
+						</div>
+						<div class="form-group">
+							<label for="description">Description</label>
+							<input type="text" id="description" name="description" placeholder="Argent de poche hebdomadaire" required>
+						</div>
+						<button type="submit" class="btn-add">Ajouter</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="wallet-card transactions-section">
+			<h2>📊 Historique des transactions</h2>
+
+			{% if transactions is empty %}
+				<div class="empty-transactions">
+					<div class="empty-transactions-icon">📭</div>
+					<p>Aucune transaction pour le moment</p>
+				</div>
+			{% else %}
+				<div class="transaction-list">
+					{% for transaction in transactions %}
+						<div class="transaction-item">
+							<div class="transaction-info">
+								<div class="transaction-description">{{ transaction.description }}</div>
+								<div class="transaction-date">{{ transaction.created_at|date('d/m/Y à H:i') }}</div>
+							</div>
+							<div class="transaction-amount {{ transaction.type }}">
+								{% if transaction.type == 'credit' %}
+									+{{ transaction.amount|number_format(2, ',', ' ') }}
+									€
+								{% else %}
+									-{{ transaction.amount|number_format(2, ',', ' ') }}
+									€
+								{% endif %}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}
