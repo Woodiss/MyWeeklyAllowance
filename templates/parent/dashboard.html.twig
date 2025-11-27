@@ -158,6 +158,11 @@
 			background-color: #d4edda;
 			color: #155724;
 		}
+
+		.alert-danger {
+			background-color: #f8d7da;
+			color: #721c24;
+		}
 	</style>
 {% endblock %}
 
@@ -173,6 +178,12 @@
 		{% if session.success_message %}
 			<div class="alert alert-success">
 				{{ session.success_message }}
+			</div>
+		{% endif %}
+
+		{% if session.error_message %}
+			<div class="alert alert-danger">
+				{{ session.error_message }}
 			</div>
 		{% endif %}
 
@@ -200,6 +211,7 @@
 							<div class="teen-info">
 								<h3>{{ teen.firstname }}
 									{{ teen.lastname }}</h3>
+								<p>@{{ teen.username }}</p>
 								<p>{{ teen.age }}
 									ans</p>
 								<p>{{ teen.weekly_allowance|number_format(2, ',', ' ') }}
@@ -212,6 +224,24 @@
 							<div class="balance-amount">{{ teen.balance|number_format(2, ',', ' ') }}
 								€</div>
 						</div>
+
+						<form method="POST" action="/parent/teen/{{ teen.id }}/update-balance" style="margin-top: 1rem;">
+							<div style="display: flex; gap: 0.5rem; align-items: center;">
+								<input type="number" name="balance" step="0.01" min="0" value="{{ teen.balance }}" style="flex: 1; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem;" placeholder="Nouveau solde" required>
+								<button type="submit" style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.875rem;">
+									💰 Modifier
+								</button>
+							</div>
+						</form>
+
+						<form method="POST" action="/parent/teen/{{ teen.id }}/update-weekly-allowance" style="margin-top: 0.5rem;">
+							<div style="display: flex; gap: 0.5rem; align-items: center;">
+								<input type="number" name="weekly_allowance" step="0.01" min="0" value="{{ teen.weekly_allowance }}" style="flex: 1; padding: 0.5rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem;" placeholder="Argent de poche/semaine" required>
+								<button type="submit" style="padding: 0.5rem 1rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.875rem;">
+									📅 Modifier
+								</button>
+							</div>
+						</form>
 					</div>
 				{% endfor %}
 			</div>

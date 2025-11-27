@@ -15,7 +15,6 @@ class ParentUser
     protected string $email;
     protected string $password;
     protected DateTime $createdAt;
-    private ?string $phoneNumber = null;
     private array $managedTeens = [];
 
     public function __construct(string $firstName, string $lastName, string $email, string $password, ?int $id = null)
@@ -31,7 +30,6 @@ class ParentUser
     }
 
     // Getters
-    public function getPhoneNumber(): ?string { return $this->phoneNumber; }
     public function getManagedTeens(): array { return $this->managedTeens; }
     public function getId(): ?int { return $this->id; }
     public function getFirstName(): string { return $this->firstName; }
@@ -39,12 +37,5 @@ class ParentUser
     public function getEmail(): string { return $this->email; }
     public function getPassword(): string { return $this->password; }
     public function getCreatedAt(): DateTime { return $this->createdAt; }
-
-    // Setters
-    public function setPhoneNumber(string $phoneNumber): void 
-    { 
-        $this->phoneNumber = $phoneNumber; 
-    }
-
 
 }

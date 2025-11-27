@@ -137,6 +137,12 @@
 				</div>
 
 				<div class="form-group">
+					<label for="username">Nom d'utilisateur</label>
+					<input type="text" id="username" name="username" value="{{ username ?? '' }}" placeholder="jean_dupont" required>
+					<div class="form-hint">Utilisé pour la connexion</div>
+				</div>
+
+				<div class="form-group">
 					<label for="age">Âge</label>
 					<input type="number" id="age" name="age" value="{{ age ?? '' }}" min="10" max="18" placeholder="14" required>
 					<div class="form-hint">Entre 10 et 18 ans</div>

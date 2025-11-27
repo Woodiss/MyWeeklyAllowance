@@ -26,13 +26,14 @@ class TeenRepository
         $hashedPassword = password_hash($teen->getPassword(), PASSWORD_BCRYPT);
 
         // Insérer l'adolescent
-        $sql = "INSERT INTO teen (firstname, lastname, age, password_hash, created_at) 
-                VALUES (:firstname, :lastname, :age, :password_hash, NOW())";
+        $sql = "INSERT INTO teen (firstname, lastname, username, age, password_hash, created_at) 
+                VALUES (:firstname, :lastname, :username, :age, :password_hash, NOW())";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             'firstname' => $teen->getName(),
             'lastname' => $teen->getLastname(),
+            'username' => $teen->getUsername(),
             'age' => $teen->getAge(),
             'password_hash' => $hashedPassword
         ]);
@@ -70,7 +71,7 @@ class TeenRepository
      */
     public function findByParentId(int $parentId): array
     {
-        $sql = "SELECT t.*, ba.balance, ba.id, ba.weekly_allowance as bank_account_id
+        $sql = "SELECT t.*, ba.balance, ba.id as bank_account_id, ba.weekly_allowance
                 FROM teen t
                 INNER JOIN bank_account ba ON t.id = ba.teen_id
                 WHERE ba.parent_id = :parent_id
@@ -82,5 +83,36 @@ class TeenRepository
         return $stmt->fetchAll();
     }
 
+    /**
+     * Mettre à jour le solde d'un adolescent
+     */
+    public function updateBalance(int $teenId, float $newBalance): bool
+    {
+        $sql = "UPDATE bank_account 
+                SET balance = :balance 
+                WHERE teen_id = :teen_id";
+        
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'balance' => $newBalance,
+            'teen_id' => $teenId
+        ]);
+    }
+
+    /**
+     * Mettre à jour l'argent de poche hebdomadaire d'un adolescent
+     */
+    public function updateWeeklyAllowance(int $teenId, float $newWeeklyAllowance): bool
+    {
+        $sql = "UPDATE bank_account 
+                SET weekly_allowance = :weekly_allowance 
+                WHERE teen_id = :teen_id";
+        
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'weekly_allowance' => $newWeeklyAllowance,
+            'teen_id' => $teenId
+        ]);
+    }
 
 }

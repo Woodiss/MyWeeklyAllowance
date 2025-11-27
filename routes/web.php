@@ -42,4 +42,10 @@ return function(RouteCollector $r) {
     // Créer un adolescent
     $r->addRoute('GET', '/parent/teen/create', ['Controller\ParentController', 'createTeen', 'parent']);
     $r->addRoute('POST', '/parent/teen/create', ['Controller\ParentController', 'createTeenSubmit', 'parent']);
+    
+    // Modifier le solde d'un adolescent
+    $r->addRoute('POST', '/parent/teen/{id:\d+}/update-balance', ['Controller\ParentController', 'updateBalanceSubmit', 'parent']);
+    
+    // Modifier l'argent de poche hebdomadaire
+    $r->addRoute('POST', '/parent/teen/{id:\d+}/update-weekly-allowance', ['Controller\ParentController', 'updateWeeklyAllowanceSubmit', 'parent']);
 };

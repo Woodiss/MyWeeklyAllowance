@@ -4,6 +4,7 @@ namespace Controller;
 
 use Twig\Environment;
 
+
 /**
  * Contrôleur abstrait de base
  * Fournit les fonctionnalités communes à tous les contrôleurs

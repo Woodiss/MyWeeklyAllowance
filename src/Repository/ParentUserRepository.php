@@ -82,7 +82,7 @@ class ParentUserRepository
     {
         $user = $this->findByEmail($email);
 
-        if ($user && password_verify($hash_password, $user['password'])) {
+        if ($user && password_verify($hash_password, $user['password_hash'])) {
             return $user;
         }
 

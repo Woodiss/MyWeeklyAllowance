@@ -20,10 +20,10 @@ class TeenService
     /**
      * Créer un nouvel adolescent
      */
-    public function createTeen(string $firstName, string $lastName, int $age, string $password, int $parentId): int
+    public function createTeen(string $firstName, string $lastName, string $username, int $age, string $password, int $parentId): int
     {
         // Créer l'entité Teen
-        $teen = new Teen($firstName, $lastName, $age, $password);
+        $teen = new Teen($firstName, $lastName, $username, $age, $password);
 
         // Enregistrer en base de données
         return $this->teenRepository->create($teen, $parentId);
