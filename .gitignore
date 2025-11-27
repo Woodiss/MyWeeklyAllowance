@@ -6,7 +6,7 @@ composer.lock
 .phpunit.result.cache
 /coverage/
 /phpunit.xml
-.phpunit.cache
+.phpunit.cache/
 
 # Twig cache
 /cache/
