@@ -57,6 +57,20 @@ switch ($routeInfo[0]) {
                     exit;
                 }
             }
+            // Si 'guest' : vérifier que l'utilisateur N'EST PAS connecté
+            elseif ($requiredRole === 'guest') {
+                if (isset($_SESSION['user_id'])) {
+                    // Rediriger selon le rôle
+                    if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'parent') {
+                        header('Location: /parent/dashboard');
+                    } elseif (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'teen') {
+                        header('Location: /teen/wallet');
+                    } else {
+                        header('Location: /');
+                    }
+                    exit;
+                }
+            }
             // Sinon : vérifier le rôle spécifique
             else {
                 // Vérifier que l'utilisateur est connecté

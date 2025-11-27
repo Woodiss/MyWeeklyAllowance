@@ -67,6 +67,19 @@ class TeenRepository
     }
 
     /**
+     * Trouver un adolescent par nom d'utilisateur
+     */
+    public function findByUsername(string $username): ?array
+    {
+        $sql = "SELECT * FROM teen WHERE username = :username LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['username' => $username]);
+        
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
+    /**
      * Trouver tous les adolescents d'un parent
      */
     public function findByParentId(int $parentId): array
@@ -83,36 +96,32 @@ class TeenRepository
         return $stmt->fetchAll();
     }
 
-    /**
-     * Mettre à jour le solde d'un adolescent
-     */
-    public function updateBalance(int $teenId, float $newBalance): bool
+    public function verifyCredentials(string $username, string $hash_password): ?array
     {
-        $sql = "UPDATE bank_account 
-                SET balance = :balance 
-                WHERE teen_id = :teen_id";
-        
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            'balance' => $newBalance,
-            'teen_id' => $teenId
-        ]);
+        $user = $this->findByUsername($username);
+
+        if ($user && password_verify($hash_password, $user['password_hash'])) {
+            return $user;
+        }
+
+        return null;
     }
 
     /**
-     * Mettre à jour l'argent de poche hebdomadaire d'un adolescent
+     * Récupérer un adolescent avec son solde
      */
-    public function updateWeeklyAllowance(int $teenId, float $newWeeklyAllowance): bool
+    public function getTeenWithBalance(int $teenId): ?array
     {
-        $sql = "UPDATE bank_account 
-                SET weekly_allowance = :weekly_allowance 
-                WHERE teen_id = :teen_id";
+        $sql = "SELECT t.*, ba.balance, ba.weekly_allowance
+                FROM teen t
+                INNER JOIN bank_account ba ON t.id = ba.teen_id
+                WHERE t.id = :id";
         
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            'weekly_allowance' => $newWeeklyAllowance,
-            'teen_id' => $teenId
-        ]);
+        $stmt->execute(['id' => $teenId]);
+        
+        $result = $stmt->fetch();
+        return $result ?: null;
     }
 
 }

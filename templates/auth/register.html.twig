@@ -148,21 +148,7 @@
 					{{ error }}
 				</div>
 			{% endif %}
-
-			<form method="POST" action="/register">
-				<div class="role-selector">
-					<label class="role-option">
-						<input type="radio" name="role" value="parent" checked>
-						<div class="role-icon">👨‍👩‍👧</div>
-						<div class="role-label">Parent</div>
-					</label>
-					<label class="role-option">
-						<input type="radio" name="role" value="teen">
-						<div class="role-icon">🧒</div>
-						<div class="role-label">Adolescent</div>
-					</label>
-				</div>
-
+			<form method="post">
 				<div class="form-group">
 					<label for="name">Prénom</label>
 					<input type="text" id="name" name="name" placeholder="Jean" required>

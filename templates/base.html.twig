@@ -56,10 +56,37 @@
 	<body>
 		<nav>
 			<ul>
-				<li><a href="/">Accueil</a></li>
-				<li><a href="/about">À propos</a></li>
-				<li><a href="/login">Se connecter</a></li>
-				<li><a href="/register">S'inscrire</a></li>
+				<li>
+					<a href="/">Accueil</a>
+				</li>
+				<li>
+					<a href="/about">À propos</a>
+				</li>
+				{% if not user %}
+					<li>
+						<a href="/login">Se connecter</a>
+					</li>
+					<li>
+						<a href="/register">S'inscrire</a>
+					</li>
+				{% else %}
+					<li>
+						<a href="/logout">Se deconnecter</a>
+					</li>
+				{% endif %}
+
+				{% if user %}
+					<li>{{ user.first_name }}</li>
+					{% if user.user_role == 'teen' %}
+						<li>
+							<a href="/teen/wallet">Mon Portefeuille</a>
+						</li>
+					{% elseif user.user_role == 'parent' %}
+						<li>
+							<a href="/parent/dashboard">Tableau de bord</a>
+						</li>
+					{% endif %}
+				{% endif %}
 			</ul>
 		</nav>
 
@@ -69,3 +96,4 @@
 			{% block scripts %}{% endblock %}
 		</body>
 	</html>
+</li>

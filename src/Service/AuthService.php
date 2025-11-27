@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\ParentUser;
 use App\Entity\Teen;
 use App\Repository\ParentUserRepository;
+use App\Repository\TeenRepository;
 
 /**
  * Service d'authentification
@@ -13,10 +14,12 @@ use App\Repository\ParentUserRepository;
 class AuthService
 {
     private ParentUserRepository $ParentUserRepository;
+    private TeenRepository $TeenRepository;
 
-    public function __construct(ParentUserRepository $ParentUserRepository)
+    public function __construct(ParentUserRepository $ParentUserRepository, TeenRepository $TeenRepository)
     {
         $this->ParentUserRepository = $ParentUserRepository;
+        $this->TeenRepository = $TeenRepository;
     }
 
     /**
@@ -39,24 +42,37 @@ class AuthService
     /**
      * Connecter un utilisateur
      */
-    public function login(string $email, string $password): ?array
+    public function login(string $emailOrUsername, string $password, string $role): ?array
     {
-        return $this->ParentUserRepository->verifyCredentials($email, $password);
+        if ($role === "parent") {
+            return [$this->ParentUserRepository->verifyCredentials($emailOrUsername, $password), "parent"];
+        } else {
+            return [$this->TeenRepository->verifyCredentials($emailOrUsername, $password), "teen"];
+        }
     }
 
     /**
      * Démarrer une session utilisateur
      */
-    public function startSession(array $user): void
+    public function startSession(array $user, string $role): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_name'] = $user['name'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_role'] = "parent";
+        if ($role === "parent") {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['first_name'] = $user['name'];
+            $_SESSION['last_name'] = $user['lastname'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_role'] = "parent";
+        } else {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['username'];
+            $_SESSION['first_name'] = $user['firstname'];
+            $_SESSION['last_name'] = $user['lastname'];
+            $_SESSION['user_role'] = "teen";
+        }
     }
 
     /**

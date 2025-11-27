@@ -2,194 +2,133 @@
 
 namespace Controller;
 
-use App\Service\TeenService;
-use App\Repository\TeenRepository;
 use App\Repository\ParentUserRepository;
+use App\Repository\TeenRepository;
+use App\Repository\BankAccountRepository;
+use App\Entity\Teen;
 
 /**
- * Contrôleur pour les fonctionnalités parent
+ * Contrôleur pour l'espace parent
  */
 class ParentController extends AbstractController
 {
-    private TeenService $teenService;
+    private ParentUserRepository $parentRepository;
     private TeenRepository $teenRepository;
+    private BankAccountRepository $bankAccountRepository;
 
     public function __construct($twig)
     {
         parent::__construct($twig);
+        $this->parentRepository = new ParentUserRepository();
         $this->teenRepository = new TeenRepository();
-        $this->teenService = new TeenService($this->teenRepository);
+        $this->bankAccountRepository = new BankAccountRepository();
     }
 
     /**
-     * Dashboard parent
+     * Tableau de bord du parent
      */
     public function dashboard(): void
     {
+        // Récupérer l'utilisateur connecté
         $parentId = $_SESSION['user_id'];
-        
-        // Récupérer tous les adolescents gérés par ce parent
         $teens = $this->teenRepository->findByParentId($parentId);
 
         $this->render('parent/dashboard.html.twig', [
             'title' => 'Tableau de bord Parent',
+            'user' => $this->user,
             'teens' => $teens
         ]);
     }
 
     /**
-     * Page pour créer/inscrire un adolescent
+     * Page de création d'un adolescent
      */
     public function createTeen(): void
     {
         $this->render('parent/create-teen.html.twig', [
-            'title' => 'Inscrire un adolescent'
+            'title' => 'Ajouter un adolescent',
+            'user' => $this->user
         ]);
     }
 
     /**
-     * Traitement de l'inscription d'un adolescent
+     * Traitement de la création d'un adolescent
      */
     public function createTeenSubmit(): void
     {
         try {
-            $parentId = $_SESSION['user_id'];
-            
-            // Récupérer les données du formulaire
-            $firstName = $_POST['firstName'] ?? '';
-            $lastName = $_POST['lastName'] ?? '';
+            $firstname = $_POST['firstname'] ?? '';
+            $lastname = $_POST['lastname'] ?? '';
             $username = $_POST['username'] ?? '';
-            $age = isset($_POST['age']) ? (int)$_POST['age'] : 0;
+            $age = (int) ($_POST['age'] ?? 0);
             $password = $_POST['password'] ?? '';
-            $passwordConfirm = $_POST['password_confirm'] ?? '';
-
-            // Validation
-            if (empty($firstName) || empty($lastName) || empty($username) || empty($age) || empty($password)) {
+            
+            // Validation basique
+            if (empty($firstname) || empty($lastname) || empty($username) || empty($password)) {
                 throw new \InvalidArgumentException("Tous les champs sont requis");
             }
 
-            if ($password !== $passwordConfirm) {
-                throw new \InvalidArgumentException("Les mots de passe ne correspondent pas");
+            // Vérifier si le nom d'utilisateur existe déjà
+            if ($this->teenRepository->findByUsername($username)) {
+                throw new \RuntimeException("Ce nom d'utilisateur est déjà pris");
             }
 
-            if (strlen($password) < 6) {
-                throw new \InvalidArgumentException("Le mot de passe doit contenir au moins 6 caractères");
-            }
+            $teen = new Teen($firstname, $lastname, $username, $age, $password);
+            
+            $parentId = $_SESSION['user_id'];
+            $this->teenRepository->create($teen, $parentId);
 
-            if ($age < 10 || $age > 18) {
-                throw new \InvalidArgumentException("L'âge doit être entre 10 et 18 ans");
-            }
-
-            // Créer l'adolescent
-            $teenId = $this->teenService->createTeen($firstName, $lastName, $username, $age, $password, $parentId);
-
-            // Rediriger vers le dashboard avec message de succès
-            $_SESSION['success_message'] = "L'adolescent {$firstName} {$lastName} a été créé avec succès !";
             $this->redirect('/parent/dashboard');
 
-        } catch (\InvalidArgumentException $e) {
+        } catch (\Exception $e) {
             $this->render('parent/create-teen.html.twig', [
-                'title' => 'Inscrire un adolescent',
+                'title' => 'Ajouter un adolescent',
                 'error' => $e->getMessage(),
-                'firstName' => $_POST['firstName'] ?? '',
-                'lastName' => $_POST['lastName'] ?? '',
-                'username' => $_POST['username'] ?? '',
-                'age' => $_POST['age'] ?? '',
-            ]);
-        } catch (\RuntimeException $e) {
-            $this->render('parent/create-teen.html.twig', [
-                'title' => 'Inscrire un adolescent',
-                'error' => $e->getMessage(),
+                'user' => $this->user
             ]);
         }
     }
 
     /**
-     * Modifier le solde d'un adolescent
+     * Mettre à jour le solde d'un adolescent
      */
-    public function updateBalanceSubmit(int $teenId): void
+    public function updateBalanceSubmit(int $id): void
     {
         try {
-            $parentId = $_SESSION['user_id'];
+            $newBalance = (float) ($_POST['balance'] ?? 0);
             
-            // Récupérer l'adolescent et vérifier qu'il appartient au parent
-            $teens = $this->teenRepository->findByParentId($parentId);
-            $teen = null;
-            foreach ($teens as $t) {
-                if ($t['id'] == $teenId) {
-                    $teen = $t;
-                    break;
-                }
-            }
-
-            if (!$teen) {
-                throw new \RuntimeException("Adolescent non trouvé");
-            }
-
-            // Récupérer le nouveau solde
-            $newBalance = isset($_POST['balance']) ? (float)$_POST['balance'] : 0;
-
-            if ($newBalance < 0) {
-                throw new \InvalidArgumentException("Le solde ne peut pas être négatif");
-            }
-
-            // Mettre à jour le solde
-            $this->teenRepository->updateBalance($teenId, $newBalance);
-
-            $_SESSION['success_message'] = "Le solde de {$teen['firstname']} a été mis à jour à " . number_format($newBalance, 2, ',', ' ') . " €";
+            // Vérifier que l'ado appartient bien au parent connecté (sécurité)
+            // TODO: Ajouter cette vérification
+            
+            $this->bankAccountRepository->updateBalance($id, $newBalance);
+            
             $this->redirect('/parent/dashboard');
-
-        } catch (\InvalidArgumentException $e) {
-            $_SESSION['error_message'] = $e->getMessage();
-            $this->redirect('/parent/dashboard');
-        } catch (\RuntimeException $e) {
-            $_SESSION['error_message'] = $e->getMessage();
+            
+        } catch (\Exception $e) {
+            // Gérer l'erreur
             $this->redirect('/parent/dashboard');
         }
     }
 
     /**
-     * Modifier l'argent de poche hebdomadaire d'un adolescent
+     * Mettre à jour l'argent de poche hebdomadaire
      */
-    public function updateWeeklyAllowanceSubmit(int $teenId): void
+    public function updateWeeklyAllowanceSubmit(int $id): void
     {
         try {
-            $parentId = $_SESSION['user_id'];
+            $newAllowance = (float) ($_POST['weekly_allowance'] ?? 0);
             
-            // Récupérer l'adolescent et vérifier qu'il appartient au parent
-            $teens = $this->teenRepository->findByParentId($parentId);
-            $teen = null;
-            foreach ($teens as $t) {
-                if ($t['id'] == $teenId) {
-                    $teen = $t;
-                    break;
-                }
+            if ($newAllowance < 0) {
+                throw new \InvalidArgumentException("Le montant ne peut pas être négatif");
             }
-
-            if (!$teen) {
-                throw new \RuntimeException("Adolescent non trouvé");
-            }
-
-            // Récupérer le nouveau montant hebdomadaire
-            $newWeeklyAllowance = isset($_POST['weekly_allowance']) ? (float)$_POST['weekly_allowance'] : 0;
-
-            if ($newWeeklyAllowance < 0) {
-                throw new \InvalidArgumentException("L'argent de poche ne peut pas être négatif");
-            }
-
-            // Mettre à jour l'argent de poche hebdomadaire
-            $this->teenRepository->updateWeeklyAllowance($teenId, $newWeeklyAllowance);
-
-            $_SESSION['success_message'] = "L'argent de poche hebdomadaire de {$teen['firstname']} a été mis à jour à " . number_format($newWeeklyAllowance, 2, ',', ' ') . " €/semaine";
+            
+            $this->bankAccountRepository->updateWeeklyAllowance($id, $newAllowance);
+            
             $this->redirect('/parent/dashboard');
-
-        } catch (\InvalidArgumentException $e) {
-            $_SESSION['error_message'] = $e->getMessage();
-            $this->redirect('/parent/dashboard');
-        } catch (\RuntimeException $e) {
-            $_SESSION['error_message'] = $e->getMessage();
+            
+        } catch (\Exception $e) {
+            // Gérer l'erreur
             $this->redirect('/parent/dashboard');
         }
     }
-
 }

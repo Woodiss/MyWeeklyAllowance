@@ -18,12 +18,14 @@ return function(RouteCollector $r) {
     $r->addRoute('GET', '/about', ['Controller\HomeController', 'about', null]);
 
     // Page d'inscription
-    $r->addRoute('GET', '/register', ['Controller\AuthController', 'register', null]);
-    $r->addRoute('POST', '/register', ['Controller\AuthController', 'registerSubmit', null]);
+    $r->addRoute('GET', '/register', ['Controller\AuthController', 'register', 'guest']);
+    $r->addRoute('POST', '/register', ['Controller\AuthController', 'registerSubmit', 'guest']);
     
     // Page de connexion
-    $r->addRoute('GET', '/login', ['Controller\AuthController', 'login', null]);
-    $r->addRoute('POST', '/login', ['Controller\AuthController', 'loginSubmit', null]);
+    $r->addRoute('GET', '/login', ['Controller\AuthController', 'login', 'guest']);
+    $r->addRoute('POST', '/login', ['Controller\AuthController', 'loginSubmit', 'guest']);
+
+    $r->addRoute('GET', '/logout', ['Controller\AuthController', 'logout', null]);
     
     // ========================================
     // ROUTES AUTHENTIFIÉES (n'importe quel rôle)
@@ -48,4 +50,12 @@ return function(RouteCollector $r) {
     
     // Modifier l'argent de poche hebdomadaire
     $r->addRoute('POST', '/parent/teen/{id:\d+}/update-weekly-allowance', ['Controller\ParentController', 'updateWeeklyAllowanceSubmit', 'parent']);
+
+    // ========================================
+    // ROUTES TEEN (rôle 'teen' requis)
+    // ========================================
+
+    // Portefeuille
+    $r->addRoute('GET', '/teen/wallet', ['Controller\TeenController', 'wallet', 'teen']);
+    $r->addRoute('POST', '/teen/wallet/expense', ['Controller\TeenController', 'recordExpense', 'teen']);
 };

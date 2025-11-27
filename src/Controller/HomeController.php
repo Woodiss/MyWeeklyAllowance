@@ -15,6 +15,7 @@ class HomeController extends AbstractController
         $this->render('home/index.html.twig', [
             'title' => 'MyWeeklyAllowance',
             'description' => 'Gestion d\'argent de poche pour adolescents',
+            'user' => $this->user,
         ]);
     }
 
@@ -25,6 +26,7 @@ class HomeController extends AbstractController
     {
         $this->render('home/about.html.twig', [
             'title' => 'À propos',
+            'user' => $this->user,
         ]);
     }
 }

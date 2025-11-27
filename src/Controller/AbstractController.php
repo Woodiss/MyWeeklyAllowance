@@ -12,10 +12,13 @@ use Twig\Environment;
 abstract class AbstractController
 {
     protected Environment $twig;
+    protected array $user;
+
 
     public function __construct(Environment $twig)
     {
         $this->twig = $twig;
+        $this->user = $this->GetUser();
     }
 
     /**
@@ -43,5 +46,10 @@ abstract class AbstractController
     {
         header("Location: $url");
         exit;
+    }
+
+    protected function GetUser(): array
+    {
+        return $_SESSION ?? [];
     }
 }
