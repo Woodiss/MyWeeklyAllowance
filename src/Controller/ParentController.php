@@ -16,12 +16,12 @@ class ParentController extends AbstractController
     private TeenRepository $teenRepository;
     private BankAccountRepository $bankAccountRepository;
 
-    public function __construct($twig)
+    public function __construct($twig, ?ParentUserRepository $parentRepo = null, ?TeenRepository $teenRepo = null, ?BankAccountRepository $bankRepo = null)
     {
         parent::__construct($twig);
-        $this->parentRepository = new ParentUserRepository();
-        $this->teenRepository = new TeenRepository();
-        $this->bankAccountRepository = new BankAccountRepository();
+        $this->parentRepository = $parentRepo ?? new ParentUserRepository();
+        $this->teenRepository = $teenRepo ?? new TeenRepository();
+        $this->bankAccountRepository = $bankRepo ?? new BankAccountRepository();
     }
 
     /**

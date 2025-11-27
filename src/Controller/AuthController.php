@@ -13,10 +13,10 @@ class AuthController extends AbstractController
 {
     private AuthService $authService;
 
-    public function __construct($twig)
+    public function __construct($twig, ?AuthService $authService = null)
     {
         parent::__construct($twig);
-        $this->authService = new AuthService(new ParentUserRepository() , new TeenRepository());
+        $this->authService = $authService ?? new AuthService(new ParentUserRepository(), new TeenRepository());
     }
 
     /**

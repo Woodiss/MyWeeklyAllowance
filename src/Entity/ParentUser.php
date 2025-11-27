@@ -19,9 +19,8 @@ class ParentUser
 
     public function __construct(string $firstName, string $lastName, string $email, string $password, ?int $id = null)
     {
-        if ($id !== null) {
-            $this->id = $id;
-        }
+        $this->id = null ? null : $id;
+
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->email = $email;
